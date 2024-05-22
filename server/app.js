@@ -133,7 +133,6 @@ app.get("/api/cohorts/:cohortId", (req, res, next) => {
 
 app.get("/api/students", (req, res) => {
   Student.find({})
-
     .populate("cohort")
     .then((students) => {
       console.log("Retrieved students ->", students);
@@ -176,6 +175,22 @@ app.put("/api/students/:studentId", (req, res, next)=> {
     })
 })
 
+
+// add student 
+
+app.post("/api/students", (req, res) => {
+  const studentDetails = req.body
+  
+  Student.create(studentDetails)
+    .then((studentFromDB) => {
+      console.log("Created student ->", studentFromDB);
+      res.json(studentFromDB);
+    })
+    .catch((error) => {
+      console.error("Error while creating student ->", error);
+      res.status(500).json({ error: "Failed to create student" });
+    });
+});
 
 //Delte student
 app.delete("/api/students/:studentId", (req, res) => {
