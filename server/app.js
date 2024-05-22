@@ -81,10 +81,55 @@ app.post("/api/cohorts", (req, res) => {
     });
 });
 
+//put cohort
+app.put("/api/cohorts/:cohortId", (req, res, next)=> {
+  const {cohortId} = req.params;
+  const newDetailsC = req.body;
+  Cohort.findByIdAndUpdate(cohortId, newDetailsC, {new:true})
+  .then(cohorts => {
+      console.log("Success, cohort updated", cohorts)
+      res.json(cohorts)
+  })
+  .catch((error) => {
+      console.log("lots of errors", error)
+      res.status(500).json({error: "hehe sucks to be you x2"})
+  })
+});
+
+
+//Delete Cohort
+app.delete("/api/cohorts/:cohortId", (req, res) => {
+
+  Cohort.findByIdAndDelete(req.params.cohortId)
+    .then( response => {
+      res.status(200).json(response)
+    })
+    .catch( error => {
+      console.log(error)
+      res.status(500).json(error)
+    }) 
+})
+
+// get cohort details
+app.get("/api/cohorts/:cohortId", (req, res, next) => {
+
+  const {cohortId} = req.params;
+
+  Cohort.findById(cohortId)
+      .then(cohortFromDB => {
+          res.json(cohortFromDB);
+      })
+      .catch((error) => {
+          console.log("Error getting student details", error);
+          res.status(500).json({error: "Failed to get student details"});
+      })
+
+})
 
 // app.get("/api/students", (req, res) => {
 //   res.json(students);
 // });
+
 
 app.get("/api/students", (req, res) => {
   Student.find({})
@@ -98,34 +143,65 @@ app.get("/api/students", (req, res) => {
     });
 });
 
-app.post("/api/students", (req, res) => {
-  const studentDetails = req.body
+// get students in a given cohort
+
+app.get("/api/students/cohort/:cohortId", (req, res) => {
+  const {cohortId} = req.params;
   
-  Student.create(studentDetails)
-    .then((studentFromDB) => {
-      console.log("Created student ->", studentFromDB);
-      res.json(studentFromDB);
+  Student.find({cohort: cohortId})
+    .then((students) => {
+      console.log("Retrieved students ->", students);
+      res.json(students);
     })
     .catch((error) => {
-      console.error("Error while creating student ->", error);
-      res.status(500).json({ error: "Failed to create student" });
+      console.error("Error while retrieving students ->", error);
+      res.status(500).json({ error: "Failed to retrieve students" });
     });
 });
 
-app.post("/api/students", (req, res) => {
-  const studentDetails = req.body
-  
-  Student.create(studentDetails)
-    .then((studentFromDB) => {
-      console.log("Created student ->", studentFromDB);
-      res.json(studentFromDB);
+// put student
+app.put("/api/students/:studentId", (req, res, next)=> {
+  const {studentId} = req.params;
+  const newDetails = req.body;
+  Student.findByIdAndUpdate(studentId, newDetails, {new:true})
+  .then(students => {
+      console.log("Success, student updated", students)
+      res.json(students)
+  })
+  .catch((error) => {
+      console.log("lots of errors", error)
     })
-    .catch((error) => {
-      console.error("Error while creating student ->", error);
-      res.status(500).json({ error: "Failed to create student" });
-    });
-});
+})
 
+
+//Delte student
+app.delete("/api/students/:studentId", (req, res) => {
+  Student.findByIdAndDelete(req.params.studentId)
+    .then( response => {
+      res.status(200).json(response)
+    })
+    .catch( error => {
+      res.status(500).json(error)
+    }) 
+
+})
+
+//GET student Details
+
+app.get("/api/students/:studentId", (req, res, next) => {
+
+  const {studentId} = req.params;
+
+Student.findById(studentId)
+      .then(singleStudentData => {
+          res.json(singleStudentData);
+      })
+      .catch((error) => {
+          console.log("Error getting student details", error);
+          res.status(500).json({error: "Failed to get student details"});
+      })
+
+})
 
 // START SERVER
 app.listen(PORT, () => {
