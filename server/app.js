@@ -57,15 +57,30 @@ app.get("/docs", (req, res) => {
 
 app.get("/api/cohorts", (req, res) => {
   Cohort.find({})
-    .then((cohorts) => {
-      console.log("Retrieved books ->", cohorts);
-      res.json(cohorts);
+    .then((cohortFromDB) => {
+      console.log("Retrieved cohorts ->", cohortFromDB);
+      res.json(cohortFromDB);
     })
     .catch((error) => {
-      console.error("Error while retrieving students ->", error);
-      res.status(500).json({ error: "Failed to retrieve students" });
+      console.error("Error while retrieving cohorts ->", error);
+      res.status(500).json({ error: "Failed to retrieve cohorts" });
     });
 });
+
+app.post("/api/cohorts", (req, res) => {
+  const cohortDetails = req.body
+  
+  Cohort.create(cohortDetails)
+    .then((cohortFromDB) => {
+      console.log("Created cohort ->", cohortFromDB);
+      res.json(cohortFromDB);
+    })
+    .catch((error) => {
+      console.error("Error while creating cohort ->", error);
+      res.status(500).json({ error: "Failed to create cohort" });
+    });
+});
+
 
 // app.get("/api/students", (req, res) => {
 //   res.json(students);
@@ -74,7 +89,7 @@ app.get("/api/cohorts", (req, res) => {
 app.get("/api/students", (req, res) => {
   Student.find({})
     .then((students) => {
-      console.log("Retrieved books ->", students);
+      console.log("Retrieved students ->", students);
       res.json(students);
     })
     .catch((error) => {
@@ -82,6 +97,35 @@ app.get("/api/students", (req, res) => {
       res.status(500).json({ error: "Failed to retrieve students" });
     });
 });
+
+app.post("/api/students", (req, res) => {
+  const studentDetails = req.body
+  
+  Student.create(studentDetails)
+    .then((studentFromDB) => {
+      console.log("Created student ->", studentFromDB);
+      res.json(studentFromDB);
+    })
+    .catch((error) => {
+      console.error("Error while creating student ->", error);
+      res.status(500).json({ error: "Failed to create student" });
+    });
+});
+
+app.post("/api/students", (req, res) => {
+  const studentDetails = req.body
+  
+  Student.create(studentDetails)
+    .then((studentFromDB) => {
+      console.log("Created student ->", studentFromDB);
+      res.json(studentFromDB);
+    })
+    .catch((error) => {
+      console.error("Error while creating student ->", error);
+      res.status(500).json({ error: "Failed to create student" });
+    });
+});
+
 
 // START SERVER
 app.listen(PORT, () => {
