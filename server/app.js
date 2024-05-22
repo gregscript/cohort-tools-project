@@ -133,6 +133,8 @@ app.get("/api/cohorts/:cohortId", (req, res, next) => {
 
 app.get("/api/students", (req, res) => {
   Student.find({})
+
+    .populate("cohort")
     .then((students) => {
       console.log("Retrieved students ->", students);
       res.json(students);
@@ -149,6 +151,7 @@ app.get("/api/students/cohort/:cohortId", (req, res) => {
   const {cohortId} = req.params;
   
   Student.find({cohort: cohortId})
+    .populate("cohort")
     .then((students) => {
       console.log("Retrieved students ->", students);
       res.json(students);
@@ -193,6 +196,7 @@ app.get("/api/students/:studentId", (req, res, next) => {
   const {studentId} = req.params;
 
 Student.findById(studentId)
+      .populate("cohort")
       .then(singleStudentData => {
           res.json(singleStudentData);
       })
