@@ -11,7 +11,7 @@ function errorHandler (err, req, res, next) {
     // If not, send the response with status code 500 and generic error message
     res
       .status(500)
-      .json({ message: "It sucks to be you"});
+      .json({ message: "Error."});
   }
 };
 
