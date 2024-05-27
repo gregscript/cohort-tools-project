@@ -3,6 +3,11 @@ const morgan = require("morgan");
 const cookieParser = require("cookie-parser");
 const PORT = 5005;
 const cors = require("cors");
+require('dotenv').config();
+
+
+
+const {isAuthenticated} = require("./middleware/jwt.middleware");
 
 // import JSON files (not needed any more because we get data from MongoDB)
 // const cohorts = require("./cohorts.json")
@@ -15,6 +20,7 @@ const cors = require("cors");
 const mongoose = require("mongoose");
 const Student = require("./models/Student.model");
 const Cohort = require("./models/Cohort.model");
+const User = require("./models/userModel");
 
 mongoose
   .connect("mongodb://127.0.0.1:27017/cohort-tools-api")
@@ -46,6 +52,8 @@ app.use(cookieParser());
 app.get("/docs", (req, res) => {
   res.sendFile(__dirname + "/views/docs.html");
 });
+
+app.use("/auth", require("./auth.routes"));
 
 // app.get("/api/cohorts", (req, res) => {
 //   res.json(cohorts);
@@ -208,6 +216,20 @@ app.get("/api/students/:studentId", (req, res, next) => {
      next(error)
     });
 });
+
+app.get("/api/users/:id", isAuthenticated , (req, res, next) => {
+  const { id } = req.params;
+
+  User.findById(id)
+    .then((potatoUser) => {
+      res.json(potatoUser);
+    })
+    .catch((error) => {
+     next(error)
+    });
+
+
+})
 
 const { errorHandler, notFoundHandler } = require("./errorHandlers");
 
